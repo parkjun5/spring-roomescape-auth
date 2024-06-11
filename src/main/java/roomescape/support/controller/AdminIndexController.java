@@ -1,27 +1,29 @@
-package roomescape.support;
+package roomescape.support.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class IndexController {
+@RequestMapping("/admin")
+public class AdminIndexController {
 
     @GetMapping
-    public String index() {
+    public String adminIndex() {
         return "/admin/index";
     }
 
-    @GetMapping("/admin/reservation")
+    @GetMapping("/reservation")
     public String adminReservationPage() {
         return "/admin/reservation";
     }
 
-    @GetMapping("/admin/time")
+    @GetMapping("/time")
     public String adminTimePage() {
         return "/admin/time";
     }
 
-    @GetMapping("/admin/theme")
+    @GetMapping("/theme")
     public String adminThemes() {
         return "/admin/theme";
     }

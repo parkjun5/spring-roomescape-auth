@@ -1,4 +1,4 @@
-package roomescape.support;
+package roomescape.support.checker;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
