@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import roomescape.apply.auth.application.exception.IllegalTokenException;
 import roomescape.apply.auth.ui.dto.LoginResponse;
-import roomescape.apply.member.domain.MemberRoleNames;
 
 import javax.crypto.SecretKey;
 import java.sql.Timestamp;
@@ -46,6 +45,8 @@ public class JwtTokenManager {
             parseJwt(token);
         } catch (ExpiredJwtException e) {
             throw new IllegalTokenException(NOT_VALID_TOKEN_ERROR, e);
+        } catch (RuntimeException e) {
+            throw new IllegalTokenException(e);
         }
     }
 
@@ -60,7 +61,6 @@ public class JwtTokenManager {
     }
 
     private Claims parseJwt(String token) {
-
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()

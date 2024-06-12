@@ -23,7 +23,6 @@ public class PasswordHasher {
 
     public String hashPassword(String password) {
         byte[] hashBytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-
         BigInteger hashNum = new BigInteger(1, hashBytes);
         StringBuilder hashedPassword = new StringBuilder(hashNum.toString(16));
 
