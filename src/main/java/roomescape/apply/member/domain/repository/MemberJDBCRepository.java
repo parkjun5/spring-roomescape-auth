@@ -3,10 +3,14 @@ package roomescape.apply.member.domain.repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import roomescape.apply.member.domain.Member;
 
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -35,7 +39,7 @@ public class MemberJDBCRepository implements MemberRepository {
 
     private static final String COUNT_BY_EMAIL_SQL = """
                 SELECT
-                    COUNT(*)
+                    COUNT(id)
                 FROM
                     member
                 WHERE
@@ -84,17 +88,25 @@ public class MemberJDBCRepository implements MemberRepository {
 
     @Override
     public Member save(Member member) {
-        template.update(
-                INSERT_MEMBER_SQL,
-                member.getName(),
-                member.getEmail(),
-                member.getPassword()
-        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_MEMBER_SQL, new String[]{"id"});
+            ps.setString(1, member.getName());
+            ps.setString(2, member.getEmail());
+            ps.setString(3, member.getPassword());
+            return ps;
+        }, keyHolder);
+
+        long key = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        member.changeId(key);
+
         return member;
     }
 
     private RowMapper<Member> memberRowMapper() {
-        return (rs, rowNum) -> Member.of(
+        return (rs, rowNum) -> new Member(
+                rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("email"),
                 rs.getString("password")

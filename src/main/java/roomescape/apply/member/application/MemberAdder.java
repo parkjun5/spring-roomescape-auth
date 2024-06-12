@@ -1,39 +1,49 @@
 package roomescape.apply.member.application;
 
 import org.springframework.stereotype.Service;
+import roomescape.apply.auth.application.PasswordHasher;
 import roomescape.apply.member.domain.Member;
+import roomescape.apply.member.domain.MemberRole;
 import roomescape.apply.member.domain.repository.MemberRepository;
-import roomescape.apply.member.ui.dto.MemberRequest;
+import roomescape.apply.member.ui.dto.CreatedMemberRequest;
 import roomescape.apply.member.ui.dto.MemberResponse;
-import roomescape.apply.reservation.application.excpetion.DuplicateReservationException;
-import roomescape.apply.reservation.domain.Reservation;
-import roomescape.apply.reservation.domain.repository.ReservationRepository;
-import roomescape.apply.reservation.ui.dto.ReservationRequest;
-import roomescape.apply.reservation.ui.dto.ReservationResponse;
-import roomescape.apply.reservationtime.application.ReservationTimeFinder;
-import roomescape.apply.reservationtime.domain.ReservationTime;
-import roomescape.apply.theme.application.ThemeFinder;
-import roomescape.apply.theme.domain.Theme;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberAdder {
 
     private final MemberRepository memberRepository;
+    private final PasswordHasher passwordHasher;
     private final MemberFinder memberFinder;
+    private final MemberRoleSaver memberRoleSaver;
 
-    public MemberAdder(MemberRepository memberRepository, MemberFinder memberFinder) {
+    public MemberAdder(MemberRepository memberRepository, PasswordHasher passwordHasher,
+                       MemberFinder memberFinder, MemberRoleSaver memberRoleSaver) {
         this.memberRepository = memberRepository;
+        this.passwordHasher = passwordHasher;
         this.memberFinder = memberFinder;
+        this.memberRoleSaver = memberRoleSaver;
     }
 
-    public MemberResponse addNewMember(MemberRequest request) {
-        boolean isDuplicated = memberFinder.isDuplicateEmail(request.email());
+    public MemberResponse addNewMember(CreatedMemberRequest request) {
+        String email = request.email();
+        boolean isDuplicated = memberFinder.isDuplicateEmail(email);
         if (isDuplicated) {
             throw new IllegalArgumentException("이미 존재하는 아이디 입니다.");
         }
 
-        Member member = Member.of(request.name(), request.email(), request.password());
+        String hashPassword = passwordHasher.hashPassword(request.password());
+        Member member = Member.of(request.name(), email, hashPassword);
         Member saved = memberRepository.save(member);
+
+        var memberRoles = request.roleNamesWithDefaultValue()
+                .stream()
+                .map(it -> MemberRole.of(it , email))
+                .collect(Collectors.toSet());
+        memberRoleSaver.saveAll(memberRoles);
+
         return MemberResponse.from(saved);
     }
 

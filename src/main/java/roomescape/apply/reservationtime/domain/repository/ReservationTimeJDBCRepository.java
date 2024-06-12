@@ -78,7 +78,6 @@ public class ReservationTimeJDBCRepository implements ReservationTimeRepository 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("start_at", reservationTime.getStartAt());
 
-
         namedJdbcTemplate.update(INSERT_SQL, parameters, keyHolder);
         long key = Objects.requireNonNull(keyHolder.getKey()).longValue();
         reservationTime.changeId(key);
