@@ -1,6 +1,5 @@
 package roomescape.apply.member.domain;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,13 +10,6 @@ public class MemberRoleNames {
 
     private MemberRoleNames(Set<MemberRoleName> roleNames) {
         this.roleNames = roleNames;
-    }
-
-    public static MemberRoleNames getRoleNamesByJoinedNames(String joinedName) {
-        Set<MemberRoleName> roleNames = Arrays.stream(joinedName.split(DELIMITER))
-                .map(MemberRoleName::findRoleByValue)
-                .collect(Collectors.toSet());
-        return new MemberRoleNames(roleNames);
     }
 
     public static MemberRoleNames of(Set<MemberRoleName> rolesInMember) {

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service;
 import roomescape.apply.member.domain.MemberRole;
 import roomescape.apply.member.domain.repository.MemberRoleRepository;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 @Service

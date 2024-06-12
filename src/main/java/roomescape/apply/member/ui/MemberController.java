@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import roomescape.apply.member.application.MemberAdder;
 import roomescape.apply.member.application.MemberFinder;
 import roomescape.apply.member.ui.dto.CreatedMemberRequest;
-import roomescape.apply.member.ui.dto.MemberRequest;
 import roomescape.apply.member.ui.dto.MemberResponse;
 
 import java.util.List;
