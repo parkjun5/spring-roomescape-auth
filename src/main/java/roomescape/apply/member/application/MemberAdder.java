@@ -39,7 +39,7 @@ public class MemberAdder {
 
         var memberRoles = request.roleNamesWithDefaultValue()
                 .stream()
-                .map(it -> MemberRole.of(it , email))
+                .map(it -> MemberRole.of(it , saved.getId()))
                 .collect(Collectors.toSet());
         memberRoleSaver.saveAll(memberRoles);
 

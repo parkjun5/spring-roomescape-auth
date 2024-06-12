@@ -38,7 +38,7 @@ public class MemberFinder {
         Member member = memberRepository.findByEmailAndPassword(request.email(), hashPassword)
                 .orElseThrow(() -> new IllegalArgumentException(LOGIN_FAIL_MESSAGE));
 
-        Set<MemberRoleName> rolesInMember = memberRoleFinder.findRolesInMember(member.getEmail());
+        Set<MemberRoleName> rolesInMember = memberRoleFinder.findRolesInMember(member.getId());
 
         return LoginResponse.from(member, MemberRoleNames.of(rolesInMember));
     }

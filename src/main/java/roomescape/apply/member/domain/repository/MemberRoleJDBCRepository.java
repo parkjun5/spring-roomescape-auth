@@ -16,8 +16,8 @@ import java.util.Objects;
 public class MemberRoleJDBCRepository implements MemberRoleRepository {
 
     private static final String INSERT_SQL = """
-                INSERT INTO member_role(id, name, member_email)
-                 VALUES (:id, :name, :member_email)
+                INSERT INTO member_role(name, member_id)
+                 VALUES (:name, :member_id)
             """;
 
     private static final String SELECT_ROLE_NAMES_SQL = """
@@ -26,7 +26,7 @@ public class MemberRoleJDBCRepository implements MemberRoleRepository {
                 FROM
                     member_role
                 WHERE
-                    member_email = :member_email
+                    member_id = :member_id
             """;
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -39,9 +39,8 @@ public class MemberRoleJDBCRepository implements MemberRoleRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         memberRoles.forEachRemaining(it -> {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
-            parameters.addValue("id", it.getId());
             parameters.addValue("name", it.getMemberRoleName().name());
-            parameters.addValue("member_email", it.getEmail());
+            parameters.addValue("member_id", it.getMemberId());
             jdbcTemplate.update(INSERT_SQL, parameters, keyHolder);
             long key = Objects.requireNonNull(keyHolder.getKey()).longValue();
             it.changeId(key);
@@ -49,9 +48,9 @@ public class MemberRoleJDBCRepository implements MemberRoleRepository {
     }
 
     @Override
-    public List<String> findNamesByEmail(String email) {
+    public List<String> findNamesByMemberId(Long memberId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("member_email", email);
+        parameters.addValue("member_id", memberId);
         return jdbcTemplate.queryForList(SELECT_ROLE_NAMES_SQL, parameters, String.class);
     }
 }

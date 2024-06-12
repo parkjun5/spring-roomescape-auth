@@ -75,12 +75,13 @@ public class ReservationTimeJDBCRepository implements ReservationTimeRepository 
     @Override
     public ReservationTime save(ReservationTime reservationTime) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("start_at", reservationTime.getStartAt());
 
         namedJdbcTemplate.update(INSERT_SQL, parameters, keyHolder);
-        long key = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        reservationTime.changeId(key);
+        long id = Objects.requireNonNull(keyHolder.getKey()).longValue();
+        reservationTime.changeId(id);
 
         return reservationTime;
     }

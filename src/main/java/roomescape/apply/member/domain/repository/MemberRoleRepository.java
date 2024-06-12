@@ -8,5 +8,5 @@ import java.util.List;
 public interface MemberRoleRepository {
     void saveAll(Iterator<MemberRole> memberRoles);
 
-    List<String> findNamesByEmail(String email);
+    List<String> findNamesByMemberId(Long memberId);
 }

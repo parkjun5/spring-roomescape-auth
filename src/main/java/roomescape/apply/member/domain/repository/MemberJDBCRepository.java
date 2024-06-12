@@ -18,6 +18,7 @@ public class MemberJDBCRepository implements MemberRepository {
 
     private static final String SELECT_BY_EMAIL_AND_PASSWORD_SQL = """
                 SELECT
+                    id,
                     name,
                     email,
                     password
@@ -30,6 +31,7 @@ public class MemberJDBCRepository implements MemberRepository {
 
     private static final String SELECT_ALL_SQL = """
                 SELECT
+                    id,
                     name,
                     email,
                     password
@@ -64,7 +66,8 @@ public class MemberJDBCRepository implements MemberRepository {
             Member foundMember = template.queryForObject(
                     SELECT_BY_EMAIL_AND_PASSWORD_SQL,
                     memberRowMapper(),
-                    email, password
+                    email,
+                    password
             );
             return Optional.ofNullable(foundMember);
         } catch (EmptyResultDataAccessException e) {

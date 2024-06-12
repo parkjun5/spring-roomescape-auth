@@ -14,6 +14,7 @@ import roomescape.apply.member.domain.MemberRoleNames;
 import javax.crypto.SecretKey;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 
 @Service
 public class JwtTokenManager {
@@ -49,14 +50,19 @@ public class JwtTokenManager {
     }
 
     public String getRoleNameFromToken(String token) {
-        MemberRoleNames memberRoleNames = parseJwt(token).get("role", MemberRoleNames.class);
-        return memberRoleNames.getJoinedNames();
+        Object role = parseJwt(token).get("role");
+        if (role instanceof LinkedHashMap roleHashMap) {
+            if (roleHashMap.containsKey("joinedNames")) {
+                return roleHashMap.get("joinedNames").toString();
+            }
+        }
+        throw new IllegalTokenException();
     }
 
     private Claims parseJwt(String token) {
 
         return Jwts.parser()
-                .decryptWith(secretKey)
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

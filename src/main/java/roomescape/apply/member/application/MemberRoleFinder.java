@@ -16,8 +16,8 @@ public class MemberRoleFinder {
         this.memberRoleRepository = memberRoleRepository;
     }
 
-    public Set<MemberRoleName> findRolesInMember(String email) {
-        return memberRoleRepository.findNamesByEmail(email)
+    public Set<MemberRoleName> findRolesInMember(long memberId) {
+        return memberRoleRepository.findNamesByMemberId(memberId)
                 .stream()
                 .map(MemberRoleName::findRoleByValue)
                 .collect(Collectors.toSet());

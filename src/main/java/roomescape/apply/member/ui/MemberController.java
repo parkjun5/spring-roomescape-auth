@@ -1,5 +1,6 @@
 package roomescape.apply.member.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.apply.member.application.MemberAdder;
@@ -28,7 +29,8 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<MemberResponse> addMember(@RequestBody CreatedMemberRequest request) {
-        return ResponseEntity.ok(memberAdder.addNewMember(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(memberAdder.addNewMember(request));
     }
 
 }

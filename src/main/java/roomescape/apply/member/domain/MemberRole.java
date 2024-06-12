@@ -4,16 +4,16 @@ public class MemberRole {
 
     private Long id;
     private MemberRoleName memberRoleName;
-    private String email;
+    private Long memberId;
 
     protected MemberRole() {
 
     }
 
-    public static MemberRole of(String roleName, String email) {
+    public static MemberRole of(String roleName, Long memberId) {
         MemberRole member = new MemberRole();
         member.memberRoleName = MemberRoleName.findRoleByValue(roleName);
-        member.email = email;
+        member.memberId = memberId;
         return member;
     }
 
@@ -29,7 +29,7 @@ public class MemberRole {
         return memberRoleName;
     }
 
-    public String getEmail() {
-        return email;
+    public Long getMemberId() {
+        return memberId;
     }
 }
